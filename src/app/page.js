@@ -1,95 +1,101 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client"
+//import Area
 
-export default function Home() {
+import { useState } from "react";
+import Swal from "sweetalert2";
+
+//2. defination area
+function Home() {
+  //2.1 hooks
+  const [title,setTitle] = useState("Registration Form")
+  const [payload,setPayload] = useState({
+    "name": "",
+    "email": "",
+    "password": "",
+    "role":"ADMIN"
+  })
+
+  //2.2 define area
+  const handelChange = (e)=> {
+    console.log(e.target.name);
+    setPayload({
+      ...payload, // ... is called sprad operator 
+      [e.target.name]:e.target.value
+    });
+  }
+  const submitData = async ()=>{
+    console.log('hihh',payload);
+
+    // API Calling with fetch method
+    try {
+    const res = await fetch("/api/register", {
+      method:"POST",
+      headers: {
+      'Content-Type':'apllication/json'
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+
+    // SwitAlert part
+      // if(res.user.status == 200){
+        Swal.fire({
+          title: "Good job!",
+          text: "User Register Successfull",
+          icon: "success"
+        });
+      // }
+    
+    } catch (error) {
+      console.log(error);
+      Swal.fire({
+          title: 'Error',
+          text: error.message,
+          icon: 'error',
+        });
+      
+      
+    }
+    
+  }
+
+  //23. returning
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <>
+      <div className="container">
+        <div className="card mt-6">
+          <div className="card-header text-center">
+            <h1>{title}</h1>
+          </div>
+          <div className="card-body">
+            <form>
+              <div className="mb-3">
+                <label htmlFor="name" className="form-label">Name</label>
+                <input type="text" className="form-control" id="name" name="name" aria-describedby="namelHelp" onChange={handelChange} />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="exampleInputEmail" className="form-label">EmailAddress</label>
+                <input type="email" className="form-control" id="exampleInputEmail" name="email" aria-describedby="emailHelp" onChange={handelChange}/>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="password" className="form-label">Password</label>
+                <input type="password" className="form-control" id="password" name="password" aria-describedby="emailHelp" onChange={handelChange}/>
+              </div>
+              <div className="mb-3">
+                <label htmlFor="userrole" className="form-label">UserRole</label>
+                <input type="text" className="form-control" id="userrole" name="role" onChange={handelChange}/>
+              </div>
+            </form>
+          </div>
+          <div className="card-footer text-body-secondary text-center">
+            <button className="btn btn-primary" onClick={submitData}>RegisterSelf</button>
+          </div>
         </div>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+     
+    </>
   )
 }
+
+//3. export area 
+export default Home;
